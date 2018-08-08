@@ -2,11 +2,12 @@ package live.qart.Networking.Http;
 
 import java.io.*;
 import java.net.*;
+import java.util.Date;
 
 /**
  * Created by QArt on 2018/8/7.
  */
-public class UrlConnection {
+public class URLConnectionFacility {
 
     public static void setupEnv() {
 //            System.setProperty("proxySet", "true")
@@ -79,6 +80,8 @@ public class UrlConnection {
 
     public static void saveBinaryFile(URL u) throws IOException {
         URLConnection uc = u.openConnection();
+        System.out.println("The response time(raw):" + uc.getDate());
+        System.out.println("The response time:" + new Date(uc.getDate()));
         String contentType = uc.getContentType();
         int contentLength = uc.getContentLength();
         if (contentType.startsWith("text/") || contentLength == -1 ) {
@@ -92,6 +95,7 @@ public class UrlConnection {
                 int bytesRead = in.read(data, offset, data.length - offset);
                 if (bytesRead == -1) break;
                 offset += bytesRead;
+                System.out.println("offset=" + offset);
             }
             if (offset != contentLength) {
                 throw new IOException("Only read " + offset
@@ -106,16 +110,47 @@ public class UrlConnection {
         }
     }
 
+    public static void headerView(String parm) {
+        try {
+            URL u = new URL(parm);
+            URLConnection uc = u.openConnection();
+            System.out.println("Content-type: " + uc.getContentType());
+            if (uc.getContentEncoding() != null) {
+                System.out.println("Content-encoding: "
+                        + uc.getContentEncoding());
+            }
+            if (uc.getDate() != 0) {
+                System.out.println("Date: " + new Date(uc.getDate()));
+            }
+            if (uc.getLastModified() != 0) {
+                System.out.println("Last modified: "
+                        + new Date(uc.getLastModified()));
+            }
+            if (uc.getExpiration() != 0) {
+                System.out.println("Expiration date: "
+                        + new Date(uc.getExpiration()));
+            }
+            if (uc.getContentLength() != -1) {
+                System.out.println("Content-length: " + uc.getContentLength());
+            }
+        } catch (MalformedURLException ex) {
+            System.err.println(parm + " is not a URL I understand");
+        } catch (IOException ex) {
+            System.err.println(ex);
+        }
+        System.out.println();
+    }
+
 
     public static void main (String[] args) {
 
-//        setupEnv();
+        setupEnv();
 
-        String[] parm = new String[2];
+        String[] parm = new String[15];
         parm[0]= "http://10.211.17.67:4000/p2_Merchants.html";
         parm[1]= "http://paytesta.8f8.com/document-management/FileDownload?filePath=/bfbdata/doc/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/%E8%AF%81%E4%B9%A6&fileName=8f8server.cer";
-
-
+        parm[2]= "http://www.oreilly.com/favicon.ico";
+        
 //        myLocalHost();
 
 //        getWebContent(parm);
@@ -123,17 +158,16 @@ public class UrlConnection {
 //        encodingAwareSourceViewer(parm[0]);
 
         // Save binary file
-        try {
-            URL root = new URL(parm[1]);
-            saveBinaryFile(root);
-        } catch (MalformedURLException ex) {
-            System.err.println(parm[1] + " is not URL I understand.");
-        } catch (IOException ex) {
-            System.err.println(ex);
-        }
+//        try {
+//            URL root = new URL(parm[1]);
+//            saveBinaryFile(root);
+//        } catch (MalformedURLException ex) {
+//            System.err.println(parm[1] + " is not URL I understand.");
+//        } catch (IOException ex) {
+//            System.err.println(ex);
+//        }
 
-
-
+        headerView(parm[2]);
 
 
     }
