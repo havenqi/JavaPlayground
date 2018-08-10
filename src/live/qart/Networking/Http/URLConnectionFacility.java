@@ -1,8 +1,27 @@
 package live.qart.Networking.Http;
 
+
 import java.io.*;
 import java.net.*;
 import java.util.Date;
+import org.apache.http.*;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.*;
+import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 
 /**
  * Created by QArt on 2018/8/7.
@@ -144,13 +163,13 @@ public class URLConnectionFacility {
 
     public static void main (String[] args) {
 
-        setupEnv();
+//        setupEnv();
 
         String[] parm = new String[15];
         parm[0]= "http://10.211.17.67:4000/p2_Merchants.html";
         parm[1]= "http://paytesta.8f8.com/document-management/FileDownload?filePath=/bfbdata/doc/%E5%BC%80%E5%8F%91%E6%8C%87%E5%8D%97/%E8%AF%81%E4%B9%A6&fileName=8f8server.cer";
         parm[2]= "http://www.oreilly.com/favicon.ico";
-        
+
 //        myLocalHost();
 
 //        getWebContent(parm);
@@ -167,7 +186,35 @@ public class URLConnectionFacility {
 //            System.err.println(ex);
 //        }
 
-        headerView(parm[2]);
+//        headerView(parm[2]);
+
+
+        /**
+         * Header
+         */
+        HttpRequest request = new BasicHttpRequest("GET", "/", HttpVersion.HTTP_1_1);
+        request.addHeader("Content", "text/html");
+        request.addHeader("Content", "UTF-8");
+        HeaderIterator it = request.headerIterator("Content");
+
+        while (it.hasNext()) {
+            System.out.println("ContentHeader is:" + it.nextHeader());
+        }
+//        System.out.println(request.getRequestLine().getMethod());
+//        System.out.println(request.getRequestLine().getUri());
+//        System.out.println(request.getRequestLine().getProtocolVersion());
+//        System.out.println(request.getProtocolVersion());
+//        System.out.println(request.getRequestLine().toString());
+
+
+        ByteArrayEntity myEntity = new ByteArrayEntity(new byte[] {1,2,3},
+                ContentType.APPLICATION_OCTET_STREAM);
+        System.out.println("myEntity=" + myEntity.getContent());
+        System.out.println("myEntity=" + myEntity.getContentEncoding());
+        System.out.println("myEntity=" + myEntity.getContentType());
+
+
+
 
 
     }
