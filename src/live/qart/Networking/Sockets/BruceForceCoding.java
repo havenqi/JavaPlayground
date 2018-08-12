@@ -1,5 +1,9 @@
 package live.qart.Networking.Sockets;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
  * Created by QArt on 2018/8/12.
  */
@@ -63,5 +67,20 @@ public class BruceForceCoding {
         System.out.println("Decode value (offset " + offset + ", size " + BSIZE + ") = " + value);
         byte bVal = (byte) decodeIntBigEndian(message, offset, BSIZE);
         System.out.println("Same value as byte = " + bVal);
+
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(buf);
+        try {
+        out.writeByte(byteVal);
+        out.writeShort(shortVal);
+        out.writeInt(intVal);
+        out.writeLong(longVal);
+        out.flush(); } catch(IOException e) {
+            System.out.println("Exception is: " + e.toString());
+        }
+        byte[] msg = buf.toByteArray();
+        System.out.println("the buf is: " + msg);
+        System.out.println("the buf.toString() is: " + buf.toString());
+
     }
 }
